@@ -1,50 +1,36 @@
 // Global Variables
-let audioEnabled = false;
-let currentSection = 'home';
-let particlesArray = [];
 let mouseX = 0;
 let mouseY = 0;
+let isPlaying = false;
+let konamiCode = [];
+const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
-// Audio Context
-let audioContext;
-let oscillator;
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initLoading();
+    initTime();
+    initParticles();
+    initCursor();
+    initTyping();
+    initMusicPlayer();
+    initTheme();
+    initAnimations();
+    initStats();
+    initKonamiCode();
+    initVisitorCount();
+});
 
-// Initialize Audio
-function initAudio() {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-}
-
-// Play Sound Effect
-function playSound(frequency = 440, duration = 100) {
-    if (!audioEnabled || !audioContext) return;
-
-    oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    oscillator.frequency.value = frequency;
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
-
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration / 1000);
-}
-
-// Loading Animation
-window.addEventListener('load', () => {
+// Loading Screen
+function initLoading() {
     const loadingScreen = document.getElementById('loadingScreen');
     const loadingProgress = document.querySelector('.loading-progress');
-    const loadingPercentage = document.querySelector('.loading-percentage');
 
     let progress = 0;
     const interval = setInterval(() => {
-        progress += Math.random() * 15;
+        progress += Math.random() * 20;
         if (progress > 100) progress = 100;
 
         loadingProgress.style.width = `${progress}%`;
-        loadingPercentage.textContent = `${Math.floor(progress)}%`;
 
         if (progress === 100) {
             clearInterval(interval);
@@ -52,27 +38,23 @@ window.addEventListener('load', () => {
                 loadingScreen.classList.add('fade-out');
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                    initializeAnimations();
                 }, 500);
-            }, 500);
+            }, 300);
         }
     }, 100);
-});
+}
 
-// Initialize all animations
-function initializeAnimations() {
-    initParticles();
-    initTypingAnimation();
-    initGlitchEffect();
-    initCursor();
-    initNavigation();
-    initThemeToggle();
-    initAudioToggle();
-    animateStats();
-    animateCards();
-    observeSkills();
-    initContactForm();
-    updateVisitorCount();
+// Current Time
+function initTime() {
+    const updateTime = () => {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+    };
+
+    updateTime();
+    setInterval(updateTime, 1000);
 }
 
 // Particle System
@@ -83,129 +65,184 @@ function initParticles() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    const particles = [];
+    const particleCount = 80;
+
     class Particle {
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 1 - 0.5;
-            this.speedY = Math.random() * 1 - 0.5;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.radius = Math.random() * 2 + 0.5;
             this.opacity = Math.random() * 0.5 + 0.2;
         }
 
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
+            this.x += this.vx;
+            this.y += this.vy;
 
-            // Mouse interaction
-            const dx = mouseX - this.x;
-            const dy = mouseY - this.y;
+            // Mouse repulsion
+            const dx = this.x - mouseX;
+            const dy = this.y - mouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < 100) {
-                const forceDirectionX = dx / distance;
-                const forceDirectionY = dy / distance;
                 const force = (100 - distance) / 100;
-
-                this.speedX -= forceDirectionX * force * 0.5;
-                this.speedY -= forceDirectionY * force * 0.5;
+                this.vx += (dx / distance) * force * 0.2;
+                this.vy += (dy / distance) * force * 0.2;
             }
 
-            // Wrap around screen
-            if (this.x < 0) this.x = canvas.width;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.y < 0) this.y = canvas.height;
-            if (this.y > canvas.height) this.y = 0;
+            // Damping
+            this.vx *= 0.99;
+            this.vy *= 0.99;
+
+            // Boundaries
+            if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+            if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
         }
 
         draw() {
-            ctx.fillStyle = `rgba(0, 238, 255, ${this.opacity})`;
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = '#00eeff';
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
+            ctx.restore();
         }
     }
 
     // Create particles
-    for (let i = 0; i < 100; i++) {
-        particlesArray.push(new Particle());
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
     }
 
-    // Connect particles
-    function connectParticles() {
-        for (let a = 0; a < particlesArray.length; a++) {
-            for (let b = a + 1; b < particlesArray.length; b++) {
-                const dx = particlesArray[a].x - particlesArray[b].x;
-                const dy = particlesArray[a].y - particlesArray[b].y;
+    // Draw connections
+    function drawConnections() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < 100) {
-                    ctx.strokeStyle = `rgba(0, 238, 255, ${0.2 * (1 - distance / 100)})`;
+                if (distance < 150) {
+                    ctx.save();
+                    ctx.globalAlpha = (1 - distance / 150) * 0.2;
+                    ctx.strokeStyle = '#00eeff';
                     ctx.lineWidth = 0.5;
                     ctx.beginPath();
-                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
                     ctx.stroke();
+                    ctx.restore();
                 }
             }
         }
     }
 
     // Animation loop
-    function animateParticles() {
+    function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        particlesArray.forEach(particle => {
+        particles.forEach(particle => {
             particle.update();
             particle.draw();
         });
 
-        connectParticles();
-        requestAnimationFrame(animateParticles);
+        drawConnections();
+        requestAnimationFrame(animate);
     }
 
-    animateParticles();
+    animate();
 
-    // Resize handler
+    // Handle resize
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
 }
 
-// Mouse tracking
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+// Custom Cursor
+function initCursor() {
+    const cursor = document.querySelector('.cursor');
+    const cursorFollower = document.querySelector('.cursor-follower');
 
-    // Move gradient spheres
-    const sphere1 = document.querySelector('.gradient-sphere');
-    const sphere2 = document.querySelector('.gradient-sphere-2');
+    if (!cursor || !cursorFollower) return;
 
-    if (sphere1) {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        sphere1.style.transform = `translate(${x * 50 - 25}px, ${y * 50 - 25}px) scale(${1 + y * 0.2})`;
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+
+        setTimeout(() => {
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+        }, 100);
+
+        // Move gradient spheres
+        const sphere1 = document.querySelector('.gradient-sphere');
+        const sphere2 = document.querySelector('.gradient-sphere-2');
+
+        if (sphere1) {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            sphere1.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+        }
+
+        if (sphere2) {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            sphere2.style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
+        }
+    });
+
+    // Hover effects
+    const hoverables = document.querySelectorAll('a, button, .interest-tag, .mood-item');
+
+    hoverables.forEach(element => {
+        element.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            cursor.style.borderColor = 'var(--accent-color)';
+        });
+
+        element.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursor.style.borderColor = 'var(--primary-color)';
+        });
+    });
+
+    // Click effect
+    document.addEventListener('click', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        setTimeout(() => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        }, 100);
+    });
+
+    // Hide on mobile
+    if (window.innerWidth <= 768) {
+        cursor.style.display = 'none';
+        cursorFollower.style.display = 'none';
+        document.body.style.cursor = 'auto';
     }
-
-    if (sphere2) {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        sphere2.style.transform = `translate(${-x * 30 + 15}px, ${-y * 30 + 15}px) scale(${1 + x * 0.1})`;
-    }
-});
+}
 
 // Typing Animation
-function initTypingAnimation() {
+function initTyping() {
     const phrases = [
-        "developer / 19 / digital creator",
-        "building the future of web",
-        "creating immersive experiences",
-        "pushing creative boundaries"
+        "19 y/o digital creator",
+        "building cool stuff on the internet",
+        "fueled by coffee and curiosity",
+        "probably debugging something rn",
+        "turning ideas into pixels",
+        "ctrl+c ctrl+v enthusiast"
     ];
 
     let phraseIndex = 0;
-    let charIndex = 0;
+    let letterIndex = 0;
     let isDeleting = false;
     const typeText = document.getElementById('typeText');
 
@@ -213,131 +250,77 @@ function initTypingAnimation() {
         const currentPhrase = phrases[phraseIndex];
 
         if (isDeleting) {
-            typeText.textContent = currentPhrase.substring(0, charIndex - 1);
-            charIndex--;
+            typeText.textContent = currentPhrase.substring(0, letterIndex - 1);
+            letterIndex--;
         } else {
-            typeText.textContent = currentPhrase.substring(0, charIndex + 1);
-            charIndex++;
+            typeText.textContent = currentPhrase.substring(0, letterIndex + 1);
+            letterIndex++;
         }
 
-        if (!isDeleting && charIndex === currentPhrase.length) {
+        let typeSpeed = isDeleting ? 30 : 80;
+
+        if (!isDeleting && letterIndex === currentPhrase.length) {
+            typeSpeed = 2000;
             isDeleting = true;
-            setTimeout(type, 2000);
-        } else if (isDeleting && charIndex === 0) {
+        } else if (isDeleting && letterIndex === 0) {
             isDeleting = false;
             phraseIndex = (phraseIndex + 1) % phrases.length;
-            setTimeout(type, 500);
-        } else {
-            setTimeout(type, isDeleting ? 50 : 100);
+            typeSpeed = 500;
         }
+
+        setTimeout(type, typeSpeed);
     }
 
     type();
 }
 
-// Enhanced Glitch Effect
-function initGlitchEffect() {
-    const glitchElements = document.querySelectorAll('.glitch');
+// Music Player
+function initMusicPlayer() {
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const icon = playPauseBtn.querySelector('i');
+    const musicTitle = document.querySelector('.music-title');
+    const musicArtist = document.querySelector('.music-artist');
 
-    glitchElements.forEach(element => {
-        setInterval(() => {
-            if (Math.random() > 0.9) {
-                element.style.animation = 'glitch 0.3s cubic-bezier(.25, .46, .45, .94) both';
+    const songs = [
+        { title: "lofi hip hop radio", artist: "beats to relax/study to" },
+        { title: "Midnight City", artist: "M83" },
+        { title: "Resonance", artist: "HOME" },
+        { title: "After Dark", artist: "Mr.Kitty" },
+        { title: "Neon Lights", artist: "Synthwave Mix" }
+    ];
 
-                setTimeout(() => {
-                    element.style.animation = 'none';
-                }, 300);
-            }
-        }, 3000);
-    });
-}
+    let currentSong = 0;
 
-// Custom Cursor
-function initCursor() {
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
+    playPauseBtn.addEventListener('click', () => {
+        isPlaying = !isPlaying;
 
-    if (!cursorDot || !cursorOutline) return;
-
-    document.addEventListener('mousemove', (e) => {
-        cursorDot.style.left = `${e.clientX}px`;
-        cursorDot.style.top = `${e.clientY}px`;
-
-        setTimeout(() => {
-            cursorOutline.style.left = `${e.clientX}px`;
-            cursorOutline.style.top = `${e.clientY}px`;
-        }, 50);
-    });
-
-    // Hover effects
-    const hoverElements = document.querySelectorAll('a, button, .nav-item');
-
-    hoverElements.forEach(element => {
-        element.addEventListener('mouseenter', () => {
-            cursorOutline.style.width = '60px';
-            cursorOutline.style.height = '60px';
-            cursorOutline.style.borderColor = 'var(--primary-color)';
-            cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
-            playSound(600, 50);
-        });
-
-        element.addEventListener('mouseleave', () => {
-            cursorOutline.style.width = '40px';
-            cursorOutline.style.height = '40px';
-            cursorOutline.style.borderColor = 'rgba(0, 238, 255, 0.5)';
-            cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-        });
-    });
-
-    // Click effect
-    document.addEventListener('click', (e) => {
-        cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        setTimeout(() => {
-            cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-        }, 300);
-        playSound(800, 100);
-    });
-
-    // Hide cursor on mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.cursor = 'auto';
-        cursorDot.style.display = 'none';
-        cursorOutline.style.display = 'none';
-    }
-}
-
-// Navigation
-function initNavigation() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const sections = document.querySelectorAll('.section');
-
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const targetSection = item.getAttribute('data-section');
-
-            // Update active states
-            navItems.forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
-
-            // Switch sections
-            sections.forEach(section => {
-                section.classList.remove('active');
-                if (section.id === targetSection) {
-                    section.classList.add('active');
-                    currentSection = targetSection;
-                }
-            });
-
-            playSound(400, 100);
-        });
+        if (isPlaying) {
+            icon.classList.remove('fa-play');
+            icon.classList.add('fa-pause');
+            // Simulate song change
+            currentSong = (currentSong + 1) % songs.length;
+            musicTitle.textContent = songs[currentSong].title;
+            musicArtist.textContent = songs[currentSong].artist;
+        } else {
+            icon.classList.remove('fa-pause');
+            icon.classList.add('fa-play');
+        }
     });
 }
 
 // Theme Toggle
-function initThemeToggle() {
+function initTheme() {
     const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
     const icon = themeToggle.querySelector('i');
+    const body = document.body;
+
+    // Check for saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        body.classList.add('light-theme');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    }
 
     themeToggle.addEventListener('click', () => {
         body.classList.toggle('light-theme');
@@ -345,141 +328,25 @@ function initThemeToggle() {
         if (body.classList.contains('light-theme')) {
             icon.classList.remove('fa-moon');
             icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
         } else {
             icon.classList.remove('fa-sun');
             icon.classList.add('fa-moon');
-        }
-
-        playSound(500, 100);
-    });
-}
-
-// Audio Toggle
-function initAudioToggle() {
-    const audioToggle = document.getElementById('audioToggle');
-    const icon = audioToggle.querySelector('i');
-
-    audioToggle.addEventListener('click', () => {
-        audioEnabled = !audioEnabled;
-
-        if (audioEnabled) {
-            initAudio();
-            icon.classList.remove('fa-volume-mute');
-            icon.classList.add('fa-volume-up');
-            playSound(300, 200);
-        } else {
-            icon.classList.remove('fa-volume-up');
-            icon.classList.add('fa-volume-mute');
+            localStorage.setItem('theme', 'dark');
         }
     });
 }
 
-// Animate Stats
-function animateStats() {
-    const stats = document.querySelectorAll('.stat-number');
-
-    stats.forEach(stat => {
-        const target = parseInt(stat.getAttribute('data-target'));
-        let current = 0;
-        const increment = target / 50;
-
-        const updateCount = () => {
-            if (current < target) {
-                current += increment;
-                stat.textContent = Math.floor(current);
-                setTimeout(updateCount, 30);
-            } else {
-                stat.textContent = target;
-            }
-        };
-
-        updateCount();
-    });
-}
-
-// Animate Cards
-function animateCards() {
-    const cards = document.querySelectorAll('.link-card');
-
-    cards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(50px)';
-
-        setTimeout(() => {
-            card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, 100 + (index * 100));
-    });
-
-    // Add particle effect on hover
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            createCardParticles(card);
-        });
-    });
-}
-
-// Create particles on card hover
-function createCardParticles(card) {
-    const particlesContainer = card.querySelector('.card-particles');
-
-    for (let i = 0; i < 5; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            opacity: 0;
-            animation: particleFade 1s ease forwards;
-        `;
-
-        particlesContainer.appendChild(particle);
-
-        setTimeout(() => {
-            particle.remove();
-        }, 1000);
-    }
-}
-
-// Add particle fade animation
-const style = document.createElement('style');
-style.innerHTML = `
-    @keyframes particleFade {
-        0% {
-            opacity: 0;
-            transform: scale(0) translateY(0);
-        }
-        50% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-            transform: scale(1.5) translateY(-50px);
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Observe Skills Animation
-function observeSkills() {
-    const skillCards = document.querySelectorAll('.skill-card');
-    const skillProgress = document.querySelectorAll('.skill-progress');
+// Scroll Animations
+function initAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const progress = entry.target.querySelector('.skill-progress');
-                if (progress) {
-                    const level = progress.getAttribute('data-level');
-                    progress.style.width = `${level}%`;
-                }
-
-                // Animate skill card
                 entry.target.style.opacity = '0';
                 entry.target.style.transform = 'translateY(30px)';
 
@@ -488,61 +355,151 @@ function observeSkills() {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
                 }, 100);
+
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements
+    const elements = document.querySelectorAll('.link-card, .currently-card, .mood-item, .stat-card, .thought-bubble');
+    elements.forEach(el => observer.observe(el));
+}
+
+// Animate Stats
+function initStats() {
+    const stats = document.querySelectorAll('.stat-value');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.getAttribute('data-target'));
+                animateValue(entry.target, 0, target, 2000);
+                observer.unobserve(entry.target);
             }
         });
     }, { threshold: 0.5 });
 
-    skillCards.forEach(card => {
-        observer.observe(card);
+    stats.forEach(stat => observer.observe(stat));
+}
+
+function animateValue(element, start, end, duration) {
+    const range = end - start;
+    const increment = end > start ? 1 : -1;
+    const stepTime = Math.abs(Math.floor(duration / range));
+    let current = start;
+
+    const timer = setInterval(() => {
+        current += increment * Math.ceil(range / 50);
+        if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+            current = end;
+            clearInterval(timer);
+        }
+        element.textContent = current.toLocaleString();
+    }, stepTime);
+}
+
+// Konami Code Easter Egg
+function initKonamiCode() {
+    document.addEventListener('keydown', (e) => {
+        konamiCode.push(e.key);
+        konamiCode = konamiCode.slice(-konamiPattern.length);
+
+        if (konamiCode.join('') === konamiPattern.join('')) {
+            showEasterEgg();
+        }
     });
 }
 
-// Contact Form
-function initContactForm() {
-    const form = document.getElementById('contactForm');
+function showEasterEgg() {
+    const easterEgg = document.getElementById('easterEgg');
+    easterEgg.classList.add('show');
 
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+    // Create confetti
+    createConfetti();
 
-            // Get form data
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
+    setTimeout(() => {
+        easterEgg.classList.remove('show');
+    }, 3000);
+}
 
-            // Show success message (in real app, send to server)
-            const submitBtn = form.querySelector('.submit-btn');
-            const originalText = submitBtn.querySelector('.btn-text').textContent;
+function createConfetti() {
+    const colors = ['#00eeff', '#9d4edd', '#ff006e', '#00ff88'];
+    const confettiCount = 50;
 
-            submitBtn.querySelector('.btn-text').textContent = 'Message Sent!';
-            submitBtn.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
+    for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${Math.random() * 100}vw;
+            top: -20px;
+            transform: rotate(${Math.random() * 360}deg);
+            animation: fall ${3 + Math.random() * 2}s ease-out forwards;
+            z-index: 10000;
+        `;
+        document.body.appendChild(confetti);
 
-            setTimeout(() => {
-                submitBtn.querySelector('.btn-text').textContent = originalText;
-                submitBtn.style.background = '';
-                form.reset();
-            }, 3000);
-
-            playSound(1000, 200);
-        });
+        setTimeout(() => confetti.remove(), 5000);
     }
 }
 
-// Visitor Count (mock implementation)
-function updateVisitorCount() {
+// Add falling animation
+const style = document.createElement('style');
+style.innerHTML = `
+    @keyframes fall {
+        to {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// Visitor Count
+function initVisitorCount() {
     const visitorCount = document.getElementById('visitorCount');
-    if (visitorCount) {
-        // In real app, fetch from backend
-        const count = Math.floor(Math.random() * 1000 + 100);
-        visitorCount.textContent = count;
-    }
+    // Simulate visitor count (in real app, fetch from backend)
+    const count = Math.floor(Math.random() * 90000 + 10000);
+    visitorCount.textContent = count.toString().padStart(5, '0');
 }
 
-// Logo click to home
-document.addEventListener('DOMContentLoaded', () => {
-    const logo = document.querySelector('.nav-logo');
-    if (logo) {
-        logo.addEventListener('click', () => {
-            document.querySelector('[data-section="home"]').click();
-        });
-    }
+// Glitch effect on hover
+document.querySelectorAll('.glitch').forEach(element => {
+    element.addEventListener('mouseenter', () => {
+        element.style.animation = 'glitch 0.3s infinite';
+    });
+
+    element.addEventListener('mouseleave', () => {
+        element.style.animation = 'none';
+    });
 });
+
+// Interest tags floating animation
+document.querySelectorAll('.interest-tag').forEach((tag, index) => {
+    tag.style.animation = `float ${3 + Math.random() * 2}s ease-in-out ${index * 0.1}s infinite`;
+});
+
+// Add smooth scroll behavior
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+
+// Add random glitch to title occasionally
+setInterval(() => {
+    if (Math.random() > 0.95) {
+        const glitch = document.querySelector('.glitch');
+        glitch.style.animation = 'glitch 0.2s ease';
+        setTimeout(() => {
+            glitch.style.animation = 'none';
+        }, 200);
+    }
+}, 3000);

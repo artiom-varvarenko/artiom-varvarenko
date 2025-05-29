@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artiom Varvarenko | Digital Creator</title>
+    <title>artiom - digital playground</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- Loading Screen -->
 <div class="loading-screen" id="loadingScreen">
     <div class="loading-content">
-        <div class="loading-text">INITIALIZING</div>
+        <div class="loading-ascii">
+            <pre id="asciiArt">
+   ___   ___  _____  _  ___  __  __
+  / _ | / _ \/_  _/ / |/ _ \|  \/  |
+ / __ |/ , _/ / /  / / / // / |\/| |
+/_/ |_/_/|_| /_/  /_/_/\___/|_|  |_|
+            </pre>
+        </div>
         <div class="loading-bar">
             <div class="loading-progress"></div>
         </div>
-        <div class="loading-percentage">0%</div>
+        <div class="loading-text">initializing personal space...</div>
     </div>
 </div>
 
@@ -28,291 +35,426 @@
     <div class="gradient-sphere-2"></div>
     <canvas id="particleCanvas"></canvas>
     <div class="grid-overlay"></div>
+    <div class="stars"></div>
 </div>
 
-<!-- Navigation -->
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="nav-logo">
-            <span class="logo-text">AV</span>
-        </div>
-        <div class="nav-menu">
-            <button class="nav-item" data-section="home">HOME</button>
-            <button class="nav-item" data-section="about">ABOUT</button>
-            <button class="nav-item" data-section="skills">SKILLS</button>
-            <button class="nav-item" data-section="contact">CONTACT</button>
-        </div>
-        <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
+<!-- Music Player -->
+<div class="music-player" id="musicPlayer">
+    <div class="music-icon">
+        <i class="fas fa-music"></i>
+    </div>
+    <div class="music-info">
+        <div class="music-title">lofi hip hop radio</div>
+        <div class="music-artist">beats to relax/study to</div>
+    </div>
+    <div class="music-controls">
+        <button class="music-btn" id="playPauseBtn">
+            <i class="fas fa-play"></i>
         </button>
     </div>
-</nav>
+</div>
+
+<!-- Status Bar -->
+<div class="status-bar">
+    <div class="status-item">
+        <i class="fas fa-circle"></i>
+        <span id="status">online</span>
+    </div>
+    <div class="status-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>earth</span>
+    </div>
+    <div class="status-item">
+        <i class="fas fa-clock"></i>
+        <span id="currentTime">00:00</span>
+    </div>
+</div>
 
 <div class="container">
-    <!-- Home Section -->
-    <section id="home" class="section active">
-        <header>
-            <div class="glitch-container">
-                <h1 class="glitch" data-text="ARTIOM">ARTIOM</h1>
-                <h2 class="subtitle glitch-subtitle" data-text="VARVARENKO">VARVARENKO</h2>
-            </div>
-            <div class="tagline-container">
-                <p class="tagline">
-                    <span class="type-text" id="typeText"></span>
-                    <span class="cursor">|</span>
-                </p>
-            </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number" data-target="19">0</span>
-                    <span class="stat-label">Age</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="50">0</span>
-                    <span class="stat-label">Projects</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="100">0</span>
-                    <span class="stat-label">Commits</span>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="avatar-container">
+                <div class="avatar-glow"></div>
+                <div class="avatar">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300eeff'/%3E%3Cstop offset='100%25' style='stop-color:%239d4edd'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='90' fill='url(%23a)'/%3E%3Ctext x='100' y='120' font-family='Arial' font-size='80' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" alt="Avatar">
+                    <div class="avatar-status"></div>
                 </div>
             </div>
-        </header>
 
-        <main>
-            <section class="links">
-                <a href="https://hack.artiom-varvarenko.com" class="link-card" target="_blank" data-label="Portfolio">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fas fa-laptop-code"></i></div>
-                        <div class="link-info">
-                            <h3>Portfolio</h3>
-                            <p>hack.artiom-varvarenko.com</p>
-                        </div>
-                    </div>
-                    <div class="card-particles"></div>
-                </a>
+            <h1 class="glitch" data-text="artiom">artiom</h1>
+            <p class="tagline">
+                <span class="type-text" id="typeText"></span>
+                <span class="cursor">_</span>
+            </p>
 
-                <a href="https://github.com/your-username" class="link-card" target="_blank" data-label="GitHub">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fab fa-github"></i></div>
-                        <div class="link-info">
-                            <h3>GitHub</h3>
-                            <p>Code repositories</p>
-                        </div>
-                    </div>
-                    <div class="card-particles"></div>
-                </a>
+            <div class="hero-badges">
+                <span class="badge">
+                    <i class="fas fa-birthday-cake"></i> 19
+                </span>
+                <span class="badge">
+                    <i class="fas fa-code"></i> developer
+                </span>
+                <span class="badge">
+                    <i class="fas fa-gamepad"></i> gamer
+                </span>
+                <span class="badge">
+                    <i class="fas fa-headphones"></i> music lover
+                </span>
+            </div>
+        </div>
+    </header>
 
-                <a href="https://linkedin.com/in/your-username" class="link-card" target="_blank" data-label="LinkedIn">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fab fa-linkedin"></i></div>
-                        <div class="link-info">
-                            <h3>LinkedIn</h3>
-                            <p>Professional network</p>
-                        </div>
-                    </div>
-                    <div class="card-particles"></div>
-                </a>
+    <!-- Quick Links -->
+    <section class="quick-links">
+        <h2 class="section-title">
+            <span class="title-icon">🔗</span>
+            find me on the internet
+        </h2>
 
-                <a href="https://instagram.com/your-username" class="link-card" target="_blank" data-label="Instagram">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fab fa-instagram"></i></div>
-                        <div class="link-info">
-                            <h3>Instagram</h3>
-                            <p>Visual stories</p>
-                        </div>
+        <div class="links-grid">
+            <a href="https://hack.artiom-varvarenko.com" class="link-card gradient-border" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fas fa-briefcase"></i>
                     </div>
-                    <div class="card-particles"></div>
-                </a>
+                    <div class="link-details">
+                        <h3>my work</h3>
+                        <p>professional portfolio</p>
+                    </div>
+                </div>
+            </a>
 
-                <a href="https://youtube.com/your-channel" class="link-card" target="_blank" data-label="YouTube">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fab fa-youtube"></i></div>
-                        <div class="link-info">
-                            <h3>YouTube</h3>
-                            <p>Video content</p>
-                        </div>
+            <a href="https://github.com/your-username" class="link-card" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fab fa-github"></i>
                     </div>
-                    <div class="card-particles"></div>
-                </a>
+                    <div class="link-details">
+                        <h3>github</h3>
+                        <p>code & projects</p>
+                    </div>
+                </div>
+            </a>
 
-                <a href="https://t.me/your-username" class="link-card" target="_blank" data-label="Telegram">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fab fa-telegram"></i></div>
-                        <div class="link-info">
-                            <h3>Telegram</h3>
-                            <p>Quick messages</p>
-                        </div>
+            <a href="https://discord.gg/your-server" class="link-card" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fab fa-discord"></i>
                     </div>
-                    <div class="card-particles"></div>
-                </a>
+                    <div class="link-details">
+                        <h3>discord</h3>
+                        <p>come hang out</p>
+                    </div>
+                </div>
+            </a>
 
-                <a href="https://twitter.com/your-username" class="link-card" target="_blank" data-label="Twitter">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fab fa-twitter"></i></div>
-                        <div class="link-info">
-                            <h3>Twitter</h3>
-                            <p>Thoughts & updates</p>
-                        </div>
+            <a href="https://instagram.com/your-username" class="link-card" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fab fa-instagram"></i>
                     </div>
-                    <div class="card-particles"></div>
-                </a>
+                    <div class="link-details">
+                        <h3>instagram</h3>
+                        <p>visual diary</p>
+                    </div>
+                </div>
+            </a>
 
-                <a href="mailto:your-email@example.com" class="link-card" data-label="Email">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <div class="icon"><i class="fas fa-envelope"></i></div>
-                        <div class="link-info">
-                            <h3>Email</h3>
-                            <p>Get in touch</p>
-                        </div>
+            <a href="https://youtube.com/your-channel" class="link-card" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fab fa-youtube"></i>
                     </div>
-                    <div class="card-particles"></div>
-                </a>
-            </section>
-        </main>
+                    <div class="link-details">
+                        <h3>youtube</h3>
+                        <p>videos & streams</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://twitter.com/your-username" class="link-card" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="link-details">
+                        <h3>twitter</h3>
+                        <p>random thoughts</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://linkedin.com/in/your-username" class="link-card" target="_blank">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fab fa-linkedin"></i>
+                    </div>
+                    <div class="link-details">
+                        <h3>linkedin</h3>
+                        <p>professional me</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="mailto:your-email@example.com" class="link-card">
+                <div class="card-bg"></div>
+                <div class="card-content">
+                    <div class="link-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="link-details">
+                        <h3>email</h3>
+                        <p>say hello</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="section-content">
-            <h2 class="section-title glitch" data-text="ABOUT">ABOUT</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p class="about-intro">
-                        Hello! I'm Artiom, a 19-year-old developer and digital creator passionate about pushing the boundaries of web technology.
-                    </p>
-                    <p>
-                        I specialize in creating immersive digital experiences that blend cutting-edge technology with stunning visual design. My journey in development started at a young age, and I've been obsessed with crafting unique solutions ever since.
-                    </p>
-                    <p>
-                        When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or creating content that helps others learn and grow in their development journey.
-                    </p>
+    <!-- Currently Section -->
+    <section class="currently">
+        <h2 class="section-title">
+            <span class="title-icon">🎯</span>
+            currently
+        </h2>
+
+        <div class="currently-grid">
+            <div class="currently-card">
+                <div class="card-header">
+                    <i class="fas fa-headphones"></i>
+                    <span>listening to</span>
                 </div>
-                <div class="about-image">
-                    <div class="image-container">
-                        <div class="image-glitch">
-                            <img src="https://via.placeholder.com/400x400/1a1a1a/00eeff?text=AV" alt="Artiom">
+                <div class="card-body">
+                    <div class="spotify-widget">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23191414'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%231db954'/%3E%3C/svg%3E" alt="Album Art">
+                        <div class="spotify-info">
+                            <div class="song-title">Midnight City</div>
+                            <div class="song-artist">M83</div>
                         </div>
-                        <div class="image-overlay"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="currently-card">
+                <div class="card-header">
+                    <i class="fas fa-tv"></i>
+                    <span>watching</span>
+                </div>
+                <div class="card-body">
+                    <div class="media-item">
+                        <span class="media-title">Breaking Bad</span>
+                        <span class="media-progress">Season 3, Episode 7</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="currently-card">
+                <div class="card-header">
+                    <i class="fas fa-book"></i>
+                    <span>reading</span>
+                </div>
+                <div class="card-body">
+                    <div class="media-item">
+                        <span class="media-title">The Midnight Library</span>
+                        <span class="media-progress">Matt Haig</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="currently-card">
+                <div class="card-header">
+                    <i class="fas fa-gamepad"></i>
+                    <span>playing</span>
+                </div>
+                <div class="card-body">
+                    <div class="media-item">
+                        <span class="media-title">Cyberpunk 2077</span>
+                        <span class="media-progress">47 hours played</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="section">
-        <div class="section-content">
-            <h2 class="section-title glitch" data-text="SKILLS">SKILLS</h2>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-icon">
-                        <i class="fab fa-js"></i>
-                    </div>
-                    <h3>JavaScript</h3>
-                    <div class="skill-level">
-                        <div class="skill-progress" data-level="90"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <h3>React</h3>
-                    <div class="skill-level">
-                        <div class="skill-progress" data-level="85"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">
-                        <i class="fab fa-node-js"></i>
-                    </div>
-                    <h3>Node.js</h3>
-                    <div class="skill-level">
-                        <div class="skill-progress" data-level="80"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <h3>Python</h3>
-                    <div class="skill-level">
-                        <div class="skill-progress" data-level="75"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3>Databases</h3>
-                    <div class="skill-level">
-                        <div class="skill-progress" data-level="70"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">
-                        <i class="fab fa-git-alt"></i>
-                    </div>
-                    <h3>Git</h3>
-                    <div class="skill-level">
-                        <div class="skill-progress" data-level="88"></div>
-                    </div>
-                </div>
+    <!-- Interests Section -->
+    <section class="interests">
+        <h2 class="section-title">
+            <span class="title-icon">✨</span>
+            things i love
+        </h2>
+
+        <div class="interests-cloud">
+            <span class="interest-tag" data-size="large">coding</span>
+            <span class="interest-tag" data-size="medium">music</span>
+            <span class="interest-tag" data-size="large">gaming</span>
+            <span class="interest-tag" data-size="small">coffee</span>
+            <span class="interest-tag" data-size="medium">sci-fi</span>
+            <span class="interest-tag" data-size="large">technology</span>
+            <span class="interest-tag" data-size="small">space</span>
+            <span class="interest-tag" data-size="medium">cyberpunk</span>
+            <span class="interest-tag" data-size="small">lofi</span>
+            <span class="interest-tag" data-size="large">web dev</span>
+            <span class="interest-tag" data-size="medium">anime</span>
+            <span class="interest-tag" data-size="small">minimalism</span>
+            <span class="interest-tag" data-size="medium">dark mode</span>
+            <span class="interest-tag" data-size="small">rain</span>
+            <span class="interest-tag" data-size="large">creativity</span>
+        </div>
+    </section>
+
+    <!-- Mood Board -->
+    <section class="mood-board">
+        <h2 class="section-title">
+            <span class="title-icon">🎨</span>
+            aesthetic
+        </h2>
+
+        <div class="mood-grid">
+            <div class="mood-item" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <span class="mood-label">purple haze</span>
+            </div>
+            <div class="mood-item" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <span class="mood-label">sunset vibes</span>
+            </div>
+            <div class="mood-item" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <span class="mood-label">ocean blue</span>
+            </div>
+            <div class="mood-item" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <span class="mood-label">mint fresh</span>
+            </div>
+            <div class="mood-item" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <span class="mood-label">summer dream</span>
+            </div>
+            <div class="mood-item" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                <span class="mood-label">deep space</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Random Thoughts -->
+    <section class="thoughts">
+        <h2 class="section-title">
+            <span class="title-icon">💭</span>
+            random thoughts
+        </h2>
+
+        <div class="thoughts-container">
+            <div class="thought-bubble">
+                <p>"why do we park in driveways and drive on parkways?"</p>
+                <span class="thought-time">2 hours ago</span>
+            </div>
+            <div class="thought-bubble">
+                <p>"the internet is just a bunch of computers talking to each other and somehow it works"</p>
+                <span class="thought-time">yesterday</span>
+            </div>
+            <div class="thought-bubble">
+                <p>"coffee is just bean soup when you think about it"</p>
+                <span class="thought-time">3 days ago</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fun Stats -->
+    <section class="fun-stats">
+        <h2 class="section-title">
+            <span class="title-icon">📊</span>
+            random stats about me
+        </h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">☕</div>
+                <div class="stat-value" data-target="847">0</div>
+                <div class="stat-label">cups of coffee this year</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💻</div>
+                <div class="stat-value" data-target="12">0</div>
+                <div class="stat-label">hours coding daily</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎮</div>
+                <div class="stat-value" data-target="2341">0</div>
+                <div class="stat-label">total gaming hours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎵</div>
+                <div class="stat-value" data-target="42069">0</div>
+                <div class="stat-label">songs in playlist</div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="section">
-        <div class="section-content">
-            <h2 class="section-title glitch" data-text="CONTACT">CONTACT</h2>
-            <div class="contact-content">
-                <p class="contact-intro">Let's create something amazing together</p>
-                <form class="contact-form" id="contactForm">
-                    <div class="form-group">
-                        <input type="text" id="name" name="name" required>
-                        <label for="name">Name</label>
-                        <span class="form-line"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" required>
-                        <label for="email">Email</label>
-                        <span class="form-line"></span>
-                    </div>
-                    <div class="form-group">
-                        <textarea id="message" name="message" rows="4" required></textarea>
-                        <label for="message">Message</label>
-                        <span class="form-line"></span>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        <span class="btn-text">Send Message</span>
-                        <div class="btn-glow"></div>
-                    </button>
-                </form>
+    <section class="contact">
+        <h2 class="section-title">
+            <span class="title-icon">💬</span>
+            let's connect
+        </h2>
+
+        <div class="contact-content">
+            <p class="contact-intro">
+                whether you want to collaborate, chat about tech, share memes, or just say hi -
+                my inbox is always open!
+            </p>
+
+            <div class="contact-methods">
+                <a href="mailto:your-email@example.com" class="contact-method">
+                    <i class="fas fa-envelope"></i>
+                    <span>email me</span>
+                </a>
+                <a href="https://discord.gg/your-server" class="contact-method">
+                    <i class="fab fa-discord"></i>
+                    <span>find me on discord</span>
+                </a>
+                <a href="https://twitter.com/your-username" class="contact-method">
+                    <i class="fab fa-twitter"></i>
+                    <span>tweet at me</span>
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer>
-        <p>© 2025 Artiom Varvarenko | <span id="visitorCount">0</span> visitors</p>
+        <div class="footer-content">
+            <p>made with <span class="heart">♥</span> and lots of <span class="coffee">☕</span></p>
+            <p class="visitor-count">visitor #<span id="visitorCount">00000</span></p>
+        </div>
     </footer>
 </div>
 
-<!-- Custom Cursor -->
-<div class="cursor-dot"></div>
-<div class="cursor-outline"></div>
+<!-- Easter Egg Console Message -->
+<script>
+    console.log('%c🚀 Welcome to my console!', 'font-size: 20px; color: #00eeff; font-weight: bold;');
+    console.log('%cLooks like you\'re curious about how things work. I like that! 🔍', 'font-size: 14px; color: #9d4edd;');
+    console.log('%cFeel free to explore the code. If you find any bugs, let me know! 🐛', 'font-size: 14px; color: #ff006e;');
+    console.log('%c→ github.com/your-username', 'font-size: 12px; color: #888;');
+</script>
 
-<!-- Audio Toggle -->
-<button class="audio-toggle" id="audioToggle">
-    <i class="fas fa-volume-up"></i>
+<!-- Konami Code Easter Egg -->
+<div class="easter-egg" id="easterEgg">
+    <div class="easter-content">
+        <h3>🎮 You found the secret!</h3>
+        <p>Konami code activated. You're a true gamer!</p>
+    </div>
+</div>
+
+<!-- Custom Cursor -->
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
 </button>
 
 <script src="script.js"></script>
