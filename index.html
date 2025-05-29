@@ -3,88 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artiom Varvarenko</title>
+    <title>Artiom Varvarenko | Digital Creator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+        <div class="loading-text">INITIALIZING</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-percentage">0%</div>
+    </div>
+</div>
+
+<!-- Particle Background -->
 <div class="background">
     <div class="gradient-sphere"></div>
+    <div class="gradient-sphere-2"></div>
+    <canvas id="particleCanvas"></canvas>
+    <div class="grid-overlay"></div>
 </div>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <span class="logo-text">AV</span>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-item" data-section="home">HOME</button>
+            <button class="nav-item" data-section="about">ABOUT</button>
+            <button class="nav-item" data-section="skills">SKILLS</button>
+            <button class="nav-item" data-section="contact">CONTACT</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+</nav>
 
 <div class="container">
-    <header>
-        <div class="glitch-container">
-            <h1 class="glitch" data-text="ARTIOM">ARTIOM</h1>
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <header>
+            <div class="glitch-container">
+                <h1 class="glitch" data-text="ARTIOM">ARTIOM</h1>
+                <h2 class="subtitle glitch-subtitle" data-text="VARVARENKO">VARVARENKO</h2>
+            </div>
+            <div class="tagline-container">
+                <p class="tagline">
+                    <span class="type-text" id="typeText"></span>
+                    <span class="cursor">|</span>
+                </p>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="19">0</span>
+                    <span class="stat-label">Age</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="50">0</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="100">0</span>
+                    <span class="stat-label">Commits</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="links">
+                <a href="https://hack.artiom-varvarenko.com" class="link-card" target="_blank" data-label="Portfolio">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fas fa-laptop-code"></i></div>
+                        <div class="link-info">
+                            <h3>Portfolio</h3>
+                            <p>hack.artiom-varvarenko.com</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="https://github.com/your-username" class="link-card" target="_blank" data-label="GitHub">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fab fa-github"></i></div>
+                        <div class="link-info">
+                            <h3>GitHub</h3>
+                            <p>Code repositories</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="https://linkedin.com/in/your-username" class="link-card" target="_blank" data-label="LinkedIn">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fab fa-linkedin"></i></div>
+                        <div class="link-info">
+                            <h3>LinkedIn</h3>
+                            <p>Professional network</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="https://instagram.com/your-username" class="link-card" target="_blank" data-label="Instagram">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fab fa-instagram"></i></div>
+                        <div class="link-info">
+                            <h3>Instagram</h3>
+                            <p>Visual stories</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="https://youtube.com/your-channel" class="link-card" target="_blank" data-label="YouTube">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fab fa-youtube"></i></div>
+                        <div class="link-info">
+                            <h3>YouTube</h3>
+                            <p>Video content</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="https://t.me/your-username" class="link-card" target="_blank" data-label="Telegram">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fab fa-telegram"></i></div>
+                        <div class="link-info">
+                            <h3>Telegram</h3>
+                            <p>Quick messages</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="https://twitter.com/your-username" class="link-card" target="_blank" data-label="Twitter">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fab fa-twitter"></i></div>
+                        <div class="link-info">
+                            <h3>Twitter</h3>
+                            <p>Thoughts & updates</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+
+                <a href="mailto:your-email@example.com" class="link-card" data-label="Email">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="icon"><i class="fas fa-envelope"></i></div>
+                        <div class="link-info">
+                            <h3>Email</h3>
+                            <p>Get in touch</p>
+                        </div>
+                    </div>
+                    <div class="card-particles"></div>
+                </a>
+            </section>
+        </main>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="section-content">
+            <h2 class="section-title glitch" data-text="ABOUT">ABOUT</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="about-intro">
+                        Hello! I'm Artiom, a 19-year-old developer and digital creator passionate about pushing the boundaries of web technology.
+                    </p>
+                    <p>
+                        I specialize in creating immersive digital experiences that blend cutting-edge technology with stunning visual design. My journey in development started at a young age, and I've been obsessed with crafting unique solutions ever since.
+                    </p>
+                    <p>
+                        When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or creating content that helps others learn and grow in their development journey.
+                    </p>
+                </div>
+                <div class="about-image">
+                    <div class="image-container">
+                        <div class="image-glitch">
+                            <img src="https://via.placeholder.com/400x400/1a1a1a/00eeff?text=AV" alt="Artiom">
+                        </div>
+                        <div class="image-overlay"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p class="tagline">developer / 19 / digital creator</p>
-    </header>
+    </section>
 
-    <main>
-        <section class="links">
-            <a href="https://hack.artiom-varvarenko.com" class="link-card" target="_blank" data-label="Work">
-                <div class="card-content">
-                    <div class="icon"><i class="fas fa-laptop-code"></i></div>
-                    <div class="link-info">
-                        <h3>hack.artiom-varvarenko.com</h3>
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <div class="section-content">
+            <h2 class="section-title glitch" data-text="SKILLS">SKILLS</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <h3>JavaScript</h3>
+                    <div class="skill-level">
+                        <div class="skill-progress" data-level="90"></div>
                     </div>
                 </div>
-            </a>
-
-            <a href="https://linkedin.com/in/your-username" class="link-card" target="_blank" data-label="LinkedIn">
-                <div class="card-content">
-                    <div class="icon"><i class="fab fa-linkedin"></i></div>
-                    <div class="link-info">
-                        <h3>linkedin</h3>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <h3>React</h3>
+                    <div class="skill-level">
+                        <div class="skill-progress" data-level="85"></div>
                     </div>
                 </div>
-            </a>
-
-            <a href="https://instagram.com/your-username" class="link-card" target="_blank" data-label="Instagram">
-                <div class="card-content">
-                    <div class="icon"><i class="fab fa-instagram"></i></div>
-                    <div class="link-info">
-                        <h3>instagram</h3>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-node-js"></i>
+                    </div>
+                    <h3>Node.js</h3>
+                    <div class="skill-level">
+                        <div class="skill-progress" data-level="80"></div>
                     </div>
                 </div>
-            </a>
-
-            <a href="https://youtube.com/your-channel" class="link-card" target="_blank" data-label="YouTube">
-                <div class="card-content">
-                    <div class="icon"><i class="fab fa-youtube"></i></div>
-                    <div class="link-info">
-                        <h3>youtube</h3>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h3>Python</h3>
+                    <div class="skill-level">
+                        <div class="skill-progress" data-level="75"></div>
                     </div>
                 </div>
-            </a>
-
-            <a href="https://t.me/your-username" class="link-card" target="_blank" data-label="Telegram">
-                <div class="card-content">
-                    <div class="icon"><i class="fab fa-telegram"></i></div>
-                    <div class="link-info">
-                        <h3>telegram</h3>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Databases</h3>
+                    <div class="skill-level">
+                        <div class="skill-progress" data-level="70"></div>
                     </div>
                 </div>
-            </a>
-
-            <a href="mailto:your-email@example.com" class="link-card" data-label="Email">
-                <div class="card-content">
-                    <div class="icon"><i class="fas fa-envelope"></i></div>
-                    <div class="link-info">
-                        <h3>email</h3>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-git-alt"></i>
+                    </div>
+                    <h3>Git</h3>
+                    <div class="skill-level">
+                        <div class="skill-progress" data-level="88"></div>
                     </div>
                 </div>
-            </a>
-        </section>
-    </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="section-content">
+            <h2 class="section-title glitch" data-text="CONTACT">CONTACT</h2>
+            <div class="contact-content">
+                <p class="contact-intro">Let's create something amazing together</p>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" required>
+                        <label for="name">Name</label>
+                        <span class="form-line"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required>
+                        <label for="email">Email</label>
+                        <span class="form-line"></span>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" rows="4" required></textarea>
+                        <label for="message">Message</label>
+                        <span class="form-line"></span>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Send Message</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
 
     <footer>
-        <p>© 2025</p>
+        <p>© 2025 Artiom Varvarenko | <span id="visitorCount">0</span> visitors</p>
     </footer>
 </div>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
+
+<!-- Audio Toggle -->
+<button class="audio-toggle" id="audioToggle">
+    <i class="fas fa-volume-up"></i>
+</button>
 
 <script src="script.js"></script>
 </body>
