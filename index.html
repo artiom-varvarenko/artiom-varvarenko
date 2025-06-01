@@ -3,460 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>artiom - digital playground</title>
+    <title>Artiom Varvarenko - Personal Space</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- Loading Screen -->
-<div class="loading-screen" id="loadingScreen">
-    <div class="loading-content">
-        <div class="loading-ascii">
-            <pre id="asciiArt">
-   ___   ___  _____  _  ___  __  __
-  / _ | / _ \/_  _/ / |/ _ \|  \/  |
- / __ |/ , _/ / /  / / / // / |\/| |
-/_/ |_/_/|_| /_/  /_/_/\___/|_|  |_|
-            </pre>
+<!-- Initial Boot Sequence -->
+<div class="boot-sequence" id="bootSequence">
+    <div class="boot-text" id="bootText"></div>
+    <div class="boot-progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+</div>
+
+<!-- Matrix Rain Background -->
+<canvas id="matrixCanvas"></canvas>
+
+<!-- 3D Network Visualization -->
+<div id="networkContainer"></div>
+
+<!-- Terminal Interface (Hidden by default) -->
+<div class="terminal" id="terminal">
+    <div class="terminal-header">
+        <span>terminal@artiom:~</span>
+        <button class="terminal-close" onclick="closeTerminal()">×</button>
+    </div>
+    <div class="terminal-body">
+        <div id="terminalOutput"></div>
+        <div class="terminal-input-line">
+            <span class="prompt">$</span>
+            <input type="text" id="terminalInput" autofocus>
         </div>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
-        <div class="loading-text">initializing personal space...</div>
     </div>
 </div>
 
-<!-- Particle Background -->
-<div class="background">
-    <div class="gradient-sphere"></div>
-    <div class="gradient-sphere-2"></div>
-    <canvas id="particleCanvas"></canvas>
-    <div class="grid-overlay"></div>
-    <div class="stars"></div>
-</div>
+<!-- Quick Access Navigation -->
+<nav class="quick-nav">
+    <div class="nav-links">
+        <a href="https://hack.artiom-varvarenko.com" class="nav-link primary" data-text="Professional Portfolio">
+            <i class="fas fa-briefcase"></i>
+            <span>Work</span>
+        </a>
+        <a href="https://github.com/your-username" class="nav-link" data-text="Code Repository">
+            <i class="fab fa-github"></i>
+            <span>GitHub</span>
+        </a>
+        <a href="https://youtube.com/your-channel" class="nav-link" data-text="Video Content">
+            <i class="fab fa-youtube"></i>
+            <span>YouTube</span>
+        </a>
+        <a href="https://linkedin.com/in/your-username" class="nav-link" data-text="Professional Network">
+            <i class="fab fa-linkedin"></i>
+            <span>LinkedIn</span>
+        </a>
+        <a href="https://twitter.com/your-username" class="nav-link" data-text="Quick Thoughts">
+            <i class="fab fa-twitter"></i>
+            <span>Twitter</span>
+        </a>
+        <a href="https://instagram.com/your-username" class="nav-link" data-text="Visual Stories">
+            <i class="fab fa-instagram"></i>
+            <span>Instagram</span>
+        </a>
+    </div>
+    <button class="terminal-toggle" onclick="openTerminal()">
+        <i class="fas fa-terminal"></i>
+    </button>
+</nav>
 
-<!-- Music Player -->
-<div class="music-player" id="musicPlayer">
-    <div class="music-icon">
-        <i class="fas fa-music"></i>
-    </div>
-    <div class="music-info">
-        <div class="music-title">lofi hip hop radio</div>
-        <div class="music-artist">beats to relax/study to</div>
-    </div>
-    <div class="music-controls">
-        <button class="music-btn" id="playPauseBtn">
-            <i class="fas fa-play"></i>
-        </button>
-    </div>
-</div>
-
-<!-- Status Bar -->
-<div class="status-bar">
-    <div class="status-item">
-        <i class="fas fa-circle"></i>
-        <span id="status">online</span>
-    </div>
-    <div class="status-item">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>earth</span>
-    </div>
-    <div class="status-item">
-        <i class="fas fa-clock"></i>
-        <span id="currentTime">00:00</span>
-    </div>
-</div>
-
-<div class="container">
+<!-- Main Content -->
+<main class="container">
     <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-content">
-            <div class="avatar-container">
-                <div class="avatar-glow"></div>
-                <div class="avatar">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300eeff'/%3E%3Cstop offset='100%25' style='stop-color:%239d4edd'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='90' fill='url(%23a)'/%3E%3Ctext x='100' y='120' font-family='Arial' font-size='80' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" alt="Avatar">
-                    <div class="avatar-status"></div>
-                </div>
-            </div>
-
-            <h1 class="glitch" data-text="artiom">artiom</h1>
-            <p class="tagline">
-                <span class="type-text" id="typeText"></span>
-                <span class="cursor">_</span>
-            </p>
-
-            <div class="hero-badges">
-                <span class="badge">
-                    <i class="fas fa-birthday-cake"></i> 19
-                </span>
-                <span class="badge">
-                    <i class="fas fa-code"></i> developer
-                </span>
-                <span class="badge">
-                    <i class="fas fa-gamepad"></i> gamer
-                </span>
-                <span class="badge">
-                    <i class="fas fa-headphones"></i> music lover
-                </span>
-            </div>
+    <section class="hero">
+        <div class="glitch-container">
+            <h1 class="glitch-text" data-text="ARTIOM VARVARENKO">ARTIOM VARVARENKO</h1>
         </div>
-    </header>
 
-    <!-- Quick Links -->
-    <section class="quick-links">
-        <h2 class="section-title">
-            <span class="title-icon">🔗</span>
-            find me on the internet
-        </h2>
+        <div class="hero-subtitle">
+                <span class="typing-container">
+                    <span id="dynamicText"></span>
+                    <span class="typing-cursor">|</span>
+                </span>
+        </div>
 
-        <div class="links-grid">
-            <a href="https://hack.artiom-varvarenko.com" class="link-card gradient-border" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>my work</h3>
-                        <p>professional portfolio</p>
-                    </div>
-                </div>
-            </a>
+        <div class="hero-tags">
+                <span class="tag" data-skill="security">
+                    <i class="fas fa-shield-alt"></i>
+                    Penetration Tester
+                </span>
+            <span class="tag" data-skill="code">
+                    <i class="fas fa-code"></i>
+                    CS Student
+                </span>
+            <span class="tag" data-skill="fitness">
+                    <i class="fas fa-dumbbell"></i>
+                    Athlete
+                </span>
+            <span class="tag" data-skill="content">
+                    <i class="fas fa-video"></i>
+                    Content Creator
+                </span>
+        </div>
 
-            <a href="https://github.com/your-username" class="link-card" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>github</h3>
-                        <p>code & projects</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://discord.gg/your-server" class="link-card" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fab fa-discord"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>discord</h3>
-                        <p>come hang out</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://instagram.com/your-username" class="link-card" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>instagram</h3>
-                        <p>visual diary</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://youtube.com/your-channel" class="link-card" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>youtube</h3>
-                        <p>videos & streams</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://twitter.com/your-username" class="link-card" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fab fa-twitter"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>twitter</h3>
-                        <p>random thoughts</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://linkedin.com/in/your-username" class="link-card" target="_blank">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fab fa-linkedin"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>linkedin</h3>
-                        <p>professional me</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="mailto:your-email@example.com" class="link-card">
-                <div class="card-bg"></div>
-                <div class="card-content">
-                    <div class="link-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="link-details">
-                        <h3>email</h3>
-                        <p>say hello</p>
-                    </div>
-                </div>
-            </a>
+        <!-- Interactive 3D Cube -->
+        <div class="cube-container" id="cubeContainer">
+            <div class="cube" id="interactiveCube">
+                <div class="cube-face front">EXPLORE</div>
+                <div class="cube-face back">CREATE</div>
+                <div class="cube-face right">SECURE</div>
+                <div class="cube-face left">TRAIN</div>
+                <div class="cube-face top">LEARN</div>
+                <div class="cube-face bottom">GROW</div>
+            </div>
         </div>
     </section>
 
-    <!-- Currently Section -->
-    <section class="currently">
-        <h2 class="section-title">
-            <span class="title-icon">🎯</span>
-            currently
+    <!-- Activity Monitor -->
+    <section class="activity-monitor">
+        <h2 class="section-header">
+            <span class="header-icon">⚡</span>
+            Current Activity
         </h2>
 
-        <div class="currently-grid">
-            <div class="currently-card">
+        <div class="monitor-grid">
+            <div class="monitor-card" id="codeCard">
                 <div class="card-header">
-                    <i class="fas fa-headphones"></i>
-                    <span>listening to</span>
+                    <i class="fas fa-terminal"></i>
+                    <span>Code Stats</span>
                 </div>
-                <div class="card-body">
-                    <div class="spotify-widget">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23191414'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%231db954'/%3E%3C/svg%3E" alt="Album Art">
-                        <div class="spotify-info">
-                            <div class="song-title">Midnight City</div>
-                            <div class="song-artist">M83</div>
+                <div class="card-content">
+                    <div class="stat-row">
+                        <span>Lines Today:</span>
+                        <span class="stat-value" id="linesCode">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Git Commits:</span>
+                        <span class="stat-value" id="gitCommits">0</span>
+                    </div>
+                    <div class="code-preview">
+                        <pre><code id="codeSnippet"></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monitor-card" id="securityCard">
+                <div class="card-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security Labs</span>
+                </div>
+                <div class="card-content">
+                    <div class="progress-ring-container">
+                        <svg class="progress-ring" width="120" height="120">
+                            <circle class="progress-ring-bg" cx="60" cy="60" r="52"/>
+                            <circle class="progress-ring-fill" cx="60" cy="60" r="52" id="securityProgress"/>
+                        </svg>
+                        <div class="progress-text">
+                            <span id="securityPercent">0</span>%
+                        </div>
+                    </div>
+                    <div class="security-status">
+                        <span class="status-label">CTF Progress</span>
+                        <div class="mini-terminal" id="miniTerminal"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monitor-card" id="fitnessCard">
+                <div class="card-header">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Training Data</span>
+                </div>
+                <div class="card-content">
+                    <canvas id="fitnessChart"></canvas>
+                    <div class="fitness-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <span id="calories">0</span> cal
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-route"></i>
+                            <span id="distance">0</span> km
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="currently-card">
+            <div class="monitor-card" id="contentCard">
                 <div class="card-header">
-                    <i class="fas fa-tv"></i>
-                    <span>watching</span>
+                    <i class="fab fa-youtube"></i>
+                    <span>Content Stats</span>
                 </div>
-                <div class="card-body">
-                    <div class="media-item">
-                        <span class="media-title">Breaking Bad</span>
-                        <span class="media-progress">Season 3, Episode 7</span>
+                <div class="card-content">
+                    <div class="content-metrics">
+                        <div class="metric">
+                            <span class="metric-value" id="views">0</span>
+                            <span class="metric-label">Views</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="subscribers">0</span>
+                            <span class="metric-label">Subscribers</span>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="currently-card">
-                <div class="card-header">
-                    <i class="fas fa-book"></i>
-                    <span>reading</span>
-                </div>
-                <div class="card-body">
-                    <div class="media-item">
-                        <span class="media-title">The Midnight Library</span>
-                        <span class="media-progress">Matt Haig</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="currently-card">
-                <div class="card-header">
-                    <i class="fas fa-gamepad"></i>
-                    <span>playing</span>
-                </div>
-                <div class="card-body">
-                    <div class="media-item">
-                        <span class="media-title">Cyberpunk 2077</span>
-                        <span class="media-progress">47 hours played</span>
+                    <div class="upload-status">
+                        <span>Next Upload:</span>
+                        <span id="nextUpload">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Interests Section -->
-    <section class="interests">
-        <h2 class="section-title">
-            <span class="title-icon">✨</span>
-            things i love
+    <!-- Interactive Skills Matrix -->
+    <section class="skills-matrix">
+        <h2 class="section-header">
+            <span class="header-icon">🧬</span>
+            Skill Matrix
         </h2>
 
-        <div class="interests-cloud">
-            <span class="interest-tag" data-size="large">coding</span>
-            <span class="interest-tag" data-size="medium">music</span>
-            <span class="interest-tag" data-size="large">gaming</span>
-            <span class="interest-tag" data-size="small">coffee</span>
-            <span class="interest-tag" data-size="medium">sci-fi</span>
-            <span class="interest-tag" data-size="large">technology</span>
-            <span class="interest-tag" data-size="small">space</span>
-            <span class="interest-tag" data-size="medium">cyberpunk</span>
-            <span class="interest-tag" data-size="small">lofi</span>
-            <span class="interest-tag" data-size="large">web dev</span>
-            <span class="interest-tag" data-size="medium">anime</span>
-            <span class="interest-tag" data-size="small">minimalism</span>
-            <span class="interest-tag" data-size="medium">dark mode</span>
-            <span class="interest-tag" data-size="small">rain</span>
-            <span class="interest-tag" data-size="large">creativity</span>
+        <div class="matrix-container" id="skillsMatrix">
+            <!-- Dynamically generated skill nodes -->
         </div>
-    </section>
 
-    <!-- Mood Board -->
-    <section class="mood-board">
-        <h2 class="section-title">
-            <span class="title-icon">🎨</span>
-            aesthetic
-        </h2>
-
-        <div class="mood-grid">
-            <div class="mood-item" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <span class="mood-label">purple haze</span>
-            </div>
-            <div class="mood-item" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                <span class="mood-label">sunset vibes</span>
-            </div>
-            <div class="mood-item" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                <span class="mood-label">ocean blue</span>
-            </div>
-            <div class="mood-item" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                <span class="mood-label">mint fresh</span>
-            </div>
-            <div class="mood-item" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                <span class="mood-label">summer dream</span>
-            </div>
-            <div class="mood-item" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
-                <span class="mood-label">deep space</span>
+        <div class="skill-details" id="skillDetails">
+            <h3 id="skillName">Hover over a skill</h3>
+            <p id="skillDescription">See details here</p>
+            <div class="skill-level">
+                <div class="level-bar">
+                    <div class="level-fill" id="skillLevel"></div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Random Thoughts -->
-    <section class="thoughts">
-        <h2 class="section-title">
-            <span class="title-icon">💭</span>
-            random thoughts
+    <!-- Encrypted Message Challenge -->
+    <section class="challenge-section">
+        <h2 class="section-header">
+            <span class="header-icon">🔐</span>
+            Decrypt Challenge
         </h2>
 
-        <div class="thoughts-container">
-            <div class="thought-bubble">
-                <p>"why do we park in driveways and drive on parkways?"</p>
-                <span class="thought-time">2 hours ago</span>
+        <div class="challenge-container">
+            <div class="encrypted-message" id="encryptedMessage">
+                <span class="cipher-text">Vg'f abg jung lbh xabj, vg'f jung lbh pna cerir.</span>
             </div>
-            <div class="thought-bubble">
-                <p>"the internet is just a bunch of computers talking to each other and somehow it works"</p>
-                <span class="thought-time">yesterday</span>
+
+            <div class="decoder-interface">
+                <input type="text" id="decoderInput" placeholder="Enter decryption key..." />
+                <button class="decode-btn" onclick="attemptDecode()">
+                    <i class="fas fa-key"></i>
+                    Decrypt
+                </button>
             </div>
-            <div class="thought-bubble">
-                <p>"coffee is just bean soup when you think about it"</p>
-                <span class="thought-time">3 days ago</span>
+
+            <div class="hint-system">
+                <button class="hint-btn" onclick="showHint()">
+                    <i class="fas fa-lightbulb"></i>
+                    Need a hint?
+                </button>
+                <div class="hint-text" id="hintText"></div>
             </div>
         </div>
     </section>
 
-    <!-- Fun Stats -->
-    <section class="fun-stats">
-        <h2 class="section-title">
-            <span class="title-icon">📊</span>
-            random stats about me
+    <!-- Contact Interface -->
+    <section class="contact-interface">
+        <h2 class="section-header">
+            <span class="header-icon">📡</span>
+            Initialize Contact
         </h2>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">☕</div>
-                <div class="stat-value" data-target="847">0</div>
-                <div class="stat-label">cups of coffee this year</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">💻</div>
-                <div class="stat-value" data-target="12">0</div>
-                <div class="stat-label">hours coding daily</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎮</div>
-                <div class="stat-value" data-target="2341">0</div>
-                <div class="stat-label">total gaming hours</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎵</div>
-                <div class="stat-value" data-target="42069">0</div>
-                <div class="stat-label">songs in playlist</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact">
-        <h2 class="section-title">
-            <span class="title-icon">💬</span>
-            let's connect
-        </h2>
-
-        <div class="contact-content">
-            <p class="contact-intro">
-                whether you want to collaborate, chat about tech, share memes, or just say hi -
-                my inbox is always open!
-            </p>
-
-            <div class="contact-methods">
-                <a href="mailto:your-email@example.com" class="contact-method">
+        <div class="contact-grid">
+            <a href="mailto:your-email@example.com" class="contact-method">
+                <div class="method-icon">
                     <i class="fas fa-envelope"></i>
-                    <span>email me</span>
-                </a>
-                <a href="https://discord.gg/your-server" class="contact-method">
+                </div>
+                <span class="method-label">Email</span>
+                <span class="method-value">Encrypted Channel</span>
+            </a>
+
+            <a href="https://discord.gg/your-server" class="contact-method">
+                <div class="method-icon">
                     <i class="fab fa-discord"></i>
-                    <span>find me on discord</span>
-                </a>
-                <a href="https://twitter.com/your-username" class="contact-method">
-                    <i class="fab fa-twitter"></i>
-                    <span>tweet at me</span>
-                </a>
-            </div>
+                </div>
+                <span class="method-label">Discord</span>
+                <span class="method-value">Real-time Chat</span>
+            </a>
+
+            <a href="https://linkedin.com/in/your-username" class="contact-method">
+                <div class="method-icon">
+                    <i class="fab fa-linkedin"></i>
+                </div>
+                <span class="method-label">LinkedIn</span>
+                <span class="method-value">Professional</span>
+            </a>
         </div>
     </section>
+</main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>made with <span class="heart">♥</span> and lots of <span class="coffee">☕</span></p>
-            <p class="visitor-count">visitor #<span id="visitorCount">00000</span></p>
-        </div>
-    </footer>
-</div>
-
-<!-- Easter Egg Console Message -->
-<script>
-    console.log('%c🚀 Welcome to my console!', 'font-size: 20px; color: #00eeff; font-weight: bold;');
-    console.log('%cLooks like you\'re curious about how things work. I like that! 🔍', 'font-size: 14px; color: #9d4edd;');
-    console.log('%cFeel free to explore the code. If you find any bugs, let me know! 🐛', 'font-size: 14px; color: #ff006e;');
-    console.log('%c→ github.com/your-username', 'font-size: 12px; color: #888;');
-</script>
-
-<!-- Konami Code Easter Egg -->
+<!-- Easter Egg: Konami Code -->
 <div class="easter-egg" id="easterEgg">
-    <div class="easter-content">
-        <h3>🎮 You found the secret!</h3>
-        <p>Konami code activated. You're a true gamer!</p>
+    <div class="matrix-text">
+        <h3>ACCESS GRANTED</h3>
+        <p>Welcome to the Matrix</p>
     </div>
 </div>
 
-<!-- Custom Cursor -->
-<div class="cursor"></div>
-<div class="cursor-follower"></div>
+<!-- Hidden Audio Visualizer -->
+<div class="audio-visualizer" id="audioVisualizer">
+    <canvas id="visualizerCanvas"></canvas>
+</div>
 
-<!-- Theme Toggle -->
-<button class="theme-toggle" id="themeToggle">
-    <i class="fas fa-moon"></i>
-</button>
-
+<!-- Three.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Main Script -->
 <script src="script.js"></script>
 </body>
 </html>
