@@ -9,6 +9,20 @@ let mouseY = 0;
 let audioContext;
 let oscillator;
 
+// Quotes Array
+const quotes = [
+    "Life is what happens when you're busy making other plans",
+    "Be yourself; everyone else is already taken",
+    "In the middle of difficulty lies opportunity",
+    "The best time to plant a tree was 20 years ago. The second best time is now",
+    "Not all those who wander are lost",
+    "Stay hungry, stay foolish",
+    "Dream big and dare to fail",
+    "Life is either a daring adventure or nothing at all",
+    "The only impossible journey is the one you never begin",
+    "Yesterday is history, tomorrow is a mystery, today is a gift"
+];
+
 // Initialize Audio
 function initAudio() {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -70,9 +84,10 @@ function initializeAnimations() {
     initAudioToggle();
     animateStats();
     animateCards();
-    observeSkills();
-    initContactForm();
+    initQuoteRotation();
+    initKonamiCode();
     updateVisitorCount();
+    observeAnimations();
 }
 
 // Particle System
@@ -88,8 +103,8 @@ function initParticles() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
             this.size = Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 1 - 0.5;
-            this.speedY = Math.random() * 1 - 0.5;
+            this.speedX = Math.random() * 0.6 - 0.3;
+            this.speedY = Math.random() * 0.6 - 0.3;
             this.opacity = Math.random() * 0.5 + 0.2;
         }
 
@@ -107,8 +122,8 @@ function initParticles() {
                 const forceDirectionY = dy / distance;
                 const force = (100 - distance) / 100;
 
-                this.speedX -= forceDirectionX * force * 0.5;
-                this.speedY -= forceDirectionY * force * 0.5;
+                this.speedX -= forceDirectionX * force * 0.3;
+                this.speedY -= forceDirectionY * force * 0.3;
             }
 
             // Wrap around screen
@@ -198,10 +213,11 @@ document.addEventListener('mousemove', (e) => {
 // Typing Animation
 function initTypingAnimation() {
     const phrases = [
-        "developer / 19 / digital creator",
-        "building the future of web",
-        "creating immersive experiences",
-        "pushing creative boundaries"
+        "CS student / athlete / creator",
+        "cybersecurity enthusiast",
+        "building secure solutions",
+        "sharing my journey on YouTube",
+        "code, train, create, repeat"
     ];
 
     let phraseIndex = 0;
@@ -270,7 +286,7 @@ function initCursor() {
     });
 
     // Hover effects
-    const hoverElements = document.querySelectorAll('a, button, .nav-item');
+    const hoverElements = document.querySelectorAll('a, button, .nav-item, .mood-item, .gallery-item');
 
     hoverElements.forEach(element => {
         element.addEventListener('mouseenter', () => {
@@ -296,6 +312,9 @@ function initCursor() {
             cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
         }, 300);
         playSound(800, 100);
+
+        // Create click ripple
+        createClickRipple(e.clientX, e.clientY);
     });
 
     // Hide cursor on mobile
@@ -304,6 +323,36 @@ function initCursor() {
         cursorDot.style.display = 'none';
         cursorOutline.style.display = 'none';
     }
+}
+
+// Create click ripple effect
+function createClickRipple(x, y) {
+    const ripple = document.createElement('div');
+    ripple.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(circle, var(--primary-color), transparent);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.6;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.6s ease, opacity 0.6s ease;
+    `;
+
+    document.body.appendChild(ripple);
+
+    setTimeout(() => {
+        ripple.style.transform = 'translate(-50%, -50%) scale(10)';
+        ripple.style.opacity = '0';
+    }, 10);
+
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
 }
 
 // Navigation
@@ -393,7 +442,15 @@ function animateStats() {
             }
         };
 
-        updateCount();
+        // Start animation when visible
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                updateCount();
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(stat);
     });
 }
 
@@ -412,7 +469,7 @@ function animateCards() {
         }, 100 + (index * 100));
     });
 
-    // Add particle effect on hover
+    // Add hover particle effect
     cards.forEach(card => {
         card.addEventListener('mouseenter', () => {
             createCardParticles(card);
@@ -465,21 +522,122 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-// Observe Skills Animation
-function observeSkills() {
-    const skillCards = document.querySelectorAll('.skill-card');
-    const skillProgress = document.querySelectorAll('.skill-progress');
+// Quote Rotation
+function initQuoteRotation() {
+    const quoteText = document.querySelector('.quote-text');
+    const quoteRefresh = document.getElementById('quoteRefresh');
+    let quoteIndex = 0;
+
+    function changeQuote() {
+        quoteIndex = (quoteIndex + 1) % quotes.length;
+        quoteText.style.opacity = '0';
+
+        setTimeout(() => {
+            quoteText.textContent = `"${quotes[quoteIndex]}"`;
+            quoteText.style.opacity = '1';
+        }, 300);
+
+        playSound(500, 100);
+    }
+
+    quoteRefresh.addEventListener('click', changeQuote);
+
+    // Auto-rotate quotes every 10 seconds
+    setInterval(changeQuote, 10000);
+}
+
+// Konami Code Easter Egg
+function initKonamiCode() {
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === konamiCode[konamiIndex]) {
+            konamiIndex++;
+
+            if (konamiIndex === konamiCode.length) {
+                activateEasterEgg();
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
+}
+
+// Activate Easter Egg
+function activateEasterEgg() {
+    // Create confetti
+    createConfetti();
+
+    // Change all text to rainbow
+    document.body.style.animation = 'rainbow 2s linear infinite';
+
+    // Play celebration sound
+    if (audioEnabled) {
+        // Play a little melody
+        const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+        notes.forEach((note, index) => {
+            setTimeout(() => playSound(note, 200), index * 150);
+        });
+    }
+
+    // Reset after 5 seconds
+    setTimeout(() => {
+        document.body.style.animation = 'none';
+    }, 5000);
+}
+
+// Create Confetti
+function createConfetti() {
+    const confettiContainer = document.getElementById('confettiContainer');
+    const colors = ['#00eeff', '#9d4edd', '#ff006e', '#ffd700', '#00ff00', '#ff4500'];
+
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = `${Math.random() * 3}s`;
+
+        confettiContainer.appendChild(confetti);
+
+        setTimeout(() => {
+            confetti.remove();
+        }, 3000);
+    }
+}
+
+// Add rainbow animation
+const rainbowStyle = document.createElement('style');
+rainbowStyle.innerHTML = `
+    @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+`;
+document.head.appendChild(rainbowStyle);
+
+// Visitor Count
+function updateVisitorCount() {
+    const visitorCount = document.getElementById('visitorCount');
+    if (visitorCount) {
+        // Simulate visitor count
+        const count = Math.floor(Math.random() * 5000 + 1000);
+        visitorCount.textContent = count.toLocaleString();
+    }
+}
+
+// Observe Animations
+function observeAnimations() {
+    const observerOptions = {
+        threshold: 0.3,
+        rootMargin: '0px'
+    };
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const progress = entry.target.querySelector('.skill-progress');
-                if (progress) {
-                    const level = progress.getAttribute('data-level');
-                    progress.style.width = `${level}%`;
-                }
-
-                // Animate skill card
                 entry.target.style.opacity = '0';
                 entry.target.style.transform = 'translateY(30px)';
 
@@ -488,53 +646,16 @@ function observeSkills() {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
                 }, 100);
+
+                observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.5 });
+    }, observerOptions);
 
-    skillCards.forEach(card => {
-        observer.observe(card);
+    // Observe elements
+    document.querySelectorAll('.mood-item, .gallery-item, .favorite-card').forEach(el => {
+        observer.observe(el);
     });
-}
-
-// Contact Form
-function initContactForm() {
-    const form = document.getElementById('contactForm');
-
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Get form data
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-
-            // Show success message (in real app, send to server)
-            const submitBtn = form.querySelector('.submit-btn');
-            const originalText = submitBtn.querySelector('.btn-text').textContent;
-
-            submitBtn.querySelector('.btn-text').textContent = 'Message Sent!';
-            submitBtn.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
-
-            setTimeout(() => {
-                submitBtn.querySelector('.btn-text').textContent = originalText;
-                submitBtn.style.background = '';
-                form.reset();
-            }, 3000);
-
-            playSound(1000, 200);
-        });
-    }
-}
-
-// Visitor Count (mock implementation)
-function updateVisitorCount() {
-    const visitorCount = document.getElementById('visitorCount');
-    if (visitorCount) {
-        // In real app, fetch from backend
-        const count = Math.floor(Math.random() * 1000 + 100);
-        visitorCount.textContent = count;
-    }
 }
 
 // Logo click to home
@@ -545,4 +666,23 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('[data-section="home"]').click();
         });
     }
+
+    // Add interactive elements to mood board
+    document.querySelectorAll('.mood-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const moodText = item.querySelector('.mood-text').textContent;
+            playSound(800, 100);
+        });
+    });
+
+    // Add gallery interactions
+    document.querySelectorAll('.gallery-item').forEach(item => {
+        item.addEventListener('click', () => {
+            // Simple lightbox effect
+            item.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                item.style.transform = 'scale(1)';
+            }, 300);
+        });
+    });
 });
